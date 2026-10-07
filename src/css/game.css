@@ -1,0 +1,41 @@
+* {
+  box-sizing: border-box;
+}
+
+:root {
+  --game-color-page-background: #10131a;
+  --game-color-canvas-background: #202633;
+  --game-color-menu-background-start: #18202b;
+  --game-color-button-background: #26313f;
+  --game-color-button-background-secondary: #303a48;
+  --game-color-button-border: #465365;
+  --game-color-text-primary: #f3e6d0;
+  --game-color-text-secondary: #aeb7c4;
+  --game-color-text-on-accent: #10131a;
+  --game-color-accent: #f08059;
+  --game-color-accent-light: #ffc08a;
+  --game-color-accent-dark: #e66d4b;
+  --game-color-shrimp-tail: #c75b3b;
+  --game-color-hat: #202633;
+  --game-color-hat-band: #d7a95b;
+}
+
+html,
+body {
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  overflow: hidden;
+  background: #10131a;
+}
+
+body {
+  display: grid;
+  place-items: center;
+}
+
+canvas {
+  display: block;
+  background: #000000;
+  image-rendering: pixelated;
+}
