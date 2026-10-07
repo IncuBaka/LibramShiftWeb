@@ -128,55 +128,45 @@ window.StoryIntro = class StoryIntro {
   }
 
   getFadeProgress() {
-    const progress = Math.min(this.elapsed / this.fadeDuration, 1);
-    return progress * progress * (3 - 2 * progress);
+    return window.Utils.easeInOutCubic(
+      this.fadeDuration <= 0 ? 1 : this.elapsed / this.fadeDuration
+    );
   }
 
   render(context) {
-    if (this.alpha <= 0 || !this.paragraphs[this.paragraphIndex]) {
+    if (this.phase === "idle") {
       return;
     }
 
     context.save();
-    context.globalAlpha = this.alpha;
-    context.fillStyle = GameTheme.colors.textPrimary;
-    context.font = "32px sans-serif";
-    context.textAlign = "center";
-    context.textBaseline = "middle";
+    const paragraph = this.paragraphs[this.paragraphIndex];
+    if (this.alpha > 0 && paragraph) {
+      context.globalAlpha = this.alpha;
+      context.fillStyle = GameTheme.colors.textPrimary;
+      context.font = "32px sans-serif";
+      context.textAlign = "center";
+      context.textBaseline = "middle";
 
-    const maxWidth = Math.min(920, this.width - 120);
-    const lines = this.wrapText(context, this.paragraphs[this.paragraphIndex], maxWidth);
-    const lineHeight = 46;
-    const firstLineY = this.height / 2 - ((lines.length - 1) * lineHeight) / 2;
-    lines.forEach((line, index) => {
-      context.fillText(line, this.width / 2, firstLineY + index * lineHeight);
-    });
+      const maxWidth = Math.min(920, this.width - 120);
+      const lines = window.Utils.wrapText(context, paragraph, maxWidth);
+      const lineHeight = 46;
+      const firstLineY = this.height / 2;
+      lines.forEach((line, index) => {
+        context.fillText(line, this.width / 2, firstLineY + index * lineHeight);
+      });
+    }
 
     context.globalAlpha = 1;
     context.fillStyle = GameTheme.colors.textSecondary;
     context.font = "18px sans-serif";
+    context.textAlign = "center";
+    context.textBaseline = "middle";
     context.fillText("Click or press any key to continue", this.width / 2, this.height - 24);
 
     context.restore();
   }
 
   wrapText(context, text, maxWidth) {
-    const lines = [];
-    let line = "";
-
-    for (const word of text.split(/\s+/)) {
-      const candidate = line ? `${line} ${word}` : word;
-      if (line && context.measureText(candidate).width > maxWidth) {
-        lines.push(line);
-        line = word;
-      } else {
-        line = candidate;
-      }
-    }
-
-    if (line) {
-      lines.push(line);
-    }
-    return lines;
+    return window.Utils.wrapText(context, text, maxWidth);
   }
 };

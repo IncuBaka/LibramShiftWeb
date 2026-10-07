@@ -43,7 +43,7 @@ window.CharacterSelect = class CharacterSelect {
       const progress = this.rotationDuration === 0
         ? 1
         : this.rotationElapsed / this.rotationDuration;
-      const easedProgress = progress * progress * (3 - 2 * progress);
+      const easedProgress = window.Utils.easeInOutCubic(progress);
       this.rotation =
         this.rotationStart +
         (this.targetRotation - this.rotationStart) * easedProgress;
@@ -61,7 +61,7 @@ window.CharacterSelect = class CharacterSelect {
       const progress = this.enemyCarouselDuration === 0
         ? 1
         : this.enemyCarouselElapsed / this.enemyCarouselDuration;
-      const easedProgress = progress * progress * (3 - 2 * progress);
+      const easedProgress = window.Utils.easeInOutCubic(progress);
       this.enemyCarouselPosition =
         this.enemyCarouselStart +
         (this.enemyCarouselTarget - this.enemyCarouselStart) * easedProgress;
@@ -201,12 +201,6 @@ window.CharacterSelect = class CharacterSelect {
     const originY = selectionCenterY - imageHeight / 2;
     const fontSize = 11 * scale;
     const hitAreas = [];
-
-    context.fillStyle = GameTheme.colors.textPrimary;
-    context.font = "36px sans-serif";
-    context.textAlign = "center";
-    context.textBaseline = "middle";
-    context.fillText("Choose Your Libram Class", this.width / 2, 36);
 
     const portraitWidth = Math.min(320, this.width * 0.25);
     const portraitHeight = Math.min(330, this.height * 0.46);

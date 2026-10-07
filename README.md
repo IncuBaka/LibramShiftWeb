@@ -25,6 +25,7 @@ Then open `src/game.html` in a modern browser. While editing styles, run
 - `src/data/player.json` provides the default player record.
 - `src/js/player-data.js` loads player data and persists Libram selection in browser storage.
 - `src/js/splash-screen.js` manages the animated intro and reusable fade transitions.
+- `src/js/utils.js` centralizes shared helpers for clamping, easing, canvas coordinates, and text wrapping.
 - `src/js/color-palette.js` exposes the shared SCSS color palette to JavaScript.
 - `src/scss/game.scss` contains the Sass source for the page styles.
 - `src/css/game.css` is generated from the SCSS source by the build script.

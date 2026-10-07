@@ -49,11 +49,7 @@ window.MainMenu = class MainMenu {
   }
 
   getCanvasPoint(event) {
-    const bounds = this.canvas.getBoundingClientRect();
-    return {
-      x: (event.clientX - bounds.left) * (this.width / bounds.width),
-      y: (event.clientY - bounds.top) * (this.height / bounds.height)
-    };
+    return window.Utils.getCanvasPoint(event, this.canvas, this.width, this.height);
   }
 
   handleKeyDown(event) {
@@ -118,7 +114,7 @@ window.MainMenu = class MainMenu {
         event.preventDefault();
         const direction = event.key === "ArrowRight" ? 1 : -1;
         area.onChange(
-          Math.max(0, Math.min(1, area.getValue() + direction * 0.05))
+          window.Utils.clamp(area.getValue() + direction * 0.05, 0, 1)
         );
       }
       return;
@@ -167,7 +163,7 @@ window.MainMenu = class MainMenu {
     }
     if (area.type === "slider") {
       area.onChange(
-        Math.max(0, Math.min(1, (point.x - area.x) / area.width))
+        window.Utils.clamp((point.x - area.x) / area.width, 0, 1)
       );
     } else {
       area.onActivate();
@@ -184,19 +180,30 @@ window.MainMenu = class MainMenu {
     this.transitionTo(nextPage);
   }
 
-  transitionTo(page) {
+  transitionTo(page, onTransition = null) {
     this.splashScreen.transitionTo(() => {
       this.page = page;
       this.focusedIndex = 0;
+      if (onTransition) {
+        onTransition();
+      }
     });
   }
 
   startIntroduction() {
-    this.splashScreen.transitionTo(() => {
-      this.page = "introduction";
-      this.focusedIndex = 0;
+    this.transitionTo("introduction", () => {
       this.storyIntro.start("Intro", () => this.transitionTo("character-select"));
     });
+  }
+
+  startCombat() {
+    if (!this.combatManager) {
+      this.combatManager = new window.CombatManager(this.width, this.height);
+    }
+
+    this.page = "game";
+    this.focusedIndex = 0;
+    this.combatManager.start();
   }
 
   update(deltaTime) {
@@ -204,6 +211,8 @@ window.MainMenu = class MainMenu {
       this.storyIntro.update(deltaTime);
     } else if (this.page === "character-select") {
       this.characterSelect.update(deltaTime);
+    } else if (this.page === "game" && this.combatManager) {
+      this.combatManager.update(deltaTime);
     }
   }
 
@@ -228,6 +237,11 @@ window.MainMenu = class MainMenu {
         this.pointer,
         this.focusedIndex
       );
+      this.drawButton("Dream", this.width / 2 - 100, 8, 200, 56, () => {
+        this.startCombat();
+      });
+    } else if (this.page === "game" && this.combatManager) {
+      this.combatManager.render(this.context);
     } else {
       this.drawGamePage();
     }

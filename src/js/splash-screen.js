@@ -38,8 +38,8 @@ window.SplashScreen = class SplashScreen {
 
     if (this.phase === "intro-in") {
       this.elapsed += deltaTime;
-      const progress = Math.min(this.elapsed / this.fadeInDuration, 1);
-      this.splashProgress = progress * progress * (3 - 2 * progress);
+      const progress = this.fadeInDuration <= 0 ? 1 : Math.min(this.elapsed / this.fadeInDuration, 1);
+      this.splashProgress = window.Utils.easeInOutCubic(progress);
       this.logoAlpha = this.splashProgress;
       if (progress === 1) {
         this.phase = "intro-hold";
@@ -50,6 +50,9 @@ window.SplashScreen = class SplashScreen {
 
     if (this.phase === "transition-out") {
       this.updateFade(deltaTime, 1, this.fadeDuration, "transition-in");
+      if (this.phase === "transition-in") {
+        this.fadeStartAlpha = this.alpha;
+      }
       return;
     }
 
@@ -79,7 +82,7 @@ window.SplashScreen = class SplashScreen {
   updateFade(deltaTime, targetAlpha, duration, nextPhase) {
     this.elapsed += deltaTime;
     const progress = duration <= 0 ? 1 : Math.min(this.elapsed / duration, 1);
-    const easedProgress = progress * progress * (3 - 2 * progress);
+    const easedProgress = window.Utils.easeInOutCubic(progress);
 
     this.alpha =
       this.fadeStartAlpha +
