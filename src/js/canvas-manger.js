@@ -18,9 +18,9 @@ async function startGame() {
   await playerData.load();
   window.playerData = playerData;
 
-  const libramData = new window.LibramData();
-  await libramData.load();
-  window.libramData = libramData;
+  const dataManager = new window.DataManager();
+  await dataManager.load();
+  window.dataManager = dataManager;
 
   const splashScreen = new window.SplashScreen(gameWidth, gameHeight);
   const mainMenu = new window.MainMenu(
@@ -31,7 +31,7 @@ async function startGame() {
     splashScreen,
     () => splashScreen.phase === "hidden",
     playerData,
-    libramData
+    dataManager
   );
   await mainMenu.storyIntro.load();
 

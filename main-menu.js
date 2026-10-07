@@ -1,5 +1,5 @@
 window.MainMenu = class MainMenu {
-  constructor(canvas, context, width, height, splashScreen, canInteract, playerData, libramData) {
+  constructor(canvas, context, width, height, splashScreen, canInteract, playerData, dataManager) {
     this.canvas = canvas;
     this.context = context;
     this.width = width;
@@ -7,7 +7,7 @@ window.MainMenu = class MainMenu {
     this.splashScreen = splashScreen;
     this.canInteract = canInteract;
     this.storyIntro = new window.StoryIntro(width, height);
-    this.characterSelect = new window.CharacterSelect(width, height, playerData, libramData);
+    this.characterSelect = new window.CharacterSelect(width, height, playerData, dataManager);
     this.page = "main";
     this.hitAreas = [];
     this.focusedIndex = 0;

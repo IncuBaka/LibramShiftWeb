@@ -1,5 +1,5 @@
 window.CharacterSelect = class CharacterSelect {
-  constructor(width, height, playerData, libramData) {
+  constructor(width, height, playerData, dataManager) {
     this.width = width;
     this.height = height;
     this.playerData = playerData;
@@ -10,17 +10,7 @@ window.CharacterSelect = class CharacterSelect {
     this.rotationElapsed = 0;
     this.rotationDuration = 0;
     this.activeSelection = "libram";
-    this.enemyNames = [
-      "Enemy 1",
-      "Enemy 2",
-      "Enemy 3",
-      "Enemy 4",
-      "Enemy 5",
-      "Enemy 6",
-      "Enemy 7",
-      "Enemy 8",
-      "Enemy 9"
-    ];
+    this.enemyNames = dataManager.enemies.map(enemy => enemy.name);
     this.selectedEnemyIndex = 0;
     this.enemyCarouselPosition = 0;
     this.enemyCarouselStart = 0;
@@ -34,7 +24,7 @@ window.CharacterSelect = class CharacterSelect {
       { id: "caster", x: 84.38, y: 175.65 },
       { id: "sinister-shaman", x: 11.39, y: 132.46 },
       { id: "brawler", x: 11.51, y: 49.64 }
-    ].map(layout => ({ ...libramData.get(layout.id), ...layout }));
+    ].map(layout => ({ ...dataManager.get(layout.id), ...layout }));
     this.selectedIndex = this.classes.findIndex(
       libram => libram.id === playerData.player.libram?.id
     );
@@ -434,8 +424,11 @@ window.CharacterSelect = class CharacterSelect {
         isSelected && this.activeSelection === "enemy" ? "600 " : ""
       }13px sans-serif`;
       context.textAlign = "center";
-      context.textBaseline = "bottom";
-      context.fillText(this.enemyNames[index], x + slotWidth / 2, slotY + slotHeight - 4);
+      context.textBaseline = "middle";
+      context.beginPath();
+      context.rect(x, slotY, slotWidth, slotHeight);
+      context.clip();
+      context.fillText(this.enemyNames[index], x + slotWidth / 2, slotY + slotHeight / 2);
       context.restore();
 
       hitAreas.push({
