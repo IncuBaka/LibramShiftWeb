@@ -2,10 +2,11 @@ window.PlayerData = class PlayerData {
   constructor() {
     this.player = null;
     this.storageKey = "libram-shift-player";
+    this.hasSave = false;
   }
 
-  async load() {
-    const response = await fetch("data/player.json");
+  async load(useSaveData = false) {
+    const response = await fetch("json/player.json");
     if (!response.ok) {
       throw new Error(`Unable to load player data: ${response.status}`);
     }
@@ -15,13 +16,31 @@ window.PlayerData = class PlayerData {
       throw new Error("Player data must include a non-empty name.");
     }
 
+    this.hasSave = false;
+    if (!useSaveData) {
+      return;
+    }
+
     const savedPlayer = localStorage.getItem(this.storageKey);
     if (savedPlayer) {
-      const savedData = JSON.parse(savedPlayer);
-      if (savedData.name === this.player.name) {
-        this.player.libram = savedData.libram;
+      try {
+        const savedData = JSON.parse(savedPlayer);
+        if (savedData && savedData.name === this.player.name) {
+          this.player = {
+            ...this.player,
+            ...savedData,
+            name: this.player.name
+          };
+          this.hasSave = true;
+        }
+      } catch (error) {
+        console.warn("Unable to read saved player data.", error);
       }
     }
+  }
+
+  loadSaved() {
+    return this.load(true);
   }
 
   selectLibram(libram) {
@@ -34,6 +53,9 @@ window.PlayerData = class PlayerData {
       name: libram.name,
       color: libram.color
     };
-    localStorage.setItem(this.storageKey, JSON.stringify(this.player));
+
+    if (this.hasSave) {
+      localStorage.setItem(this.storageKey, JSON.stringify(this.player));
+    }
   }
 };

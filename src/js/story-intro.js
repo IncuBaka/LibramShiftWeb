@@ -15,7 +15,7 @@ window.StoryIntro = class StoryIntro {
   }
 
   async load() {
-    const response = await fetch("data/story/intro.json");
+    const response = await fetch("json/events/intro.json");
     if (!response.ok) {
       throw new Error(`Unable to load story text: ${response.status}`);
     }

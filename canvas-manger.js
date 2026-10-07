@@ -28,7 +28,7 @@ function resizeCanvas() {
 
 async function startGame() {
   const playerData = new window.PlayerData();
-  await playerData.load();
+  await playerData.load(false);
   window.playerData = playerData;
 
   const dataManager = new window.DataManager();

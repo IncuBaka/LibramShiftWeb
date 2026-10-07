@@ -55,19 +55,19 @@ window.DataManager = class DataManager {
 
   async load() {
     const [libramFiles, enemyFiles] = await Promise.all([
-      this.getJsonFiles("data/librams/"),
-      this.getJsonFiles("data/enemies/")
+      this.getJsonFiles("json/librams/"),
+      this.getJsonFiles("json/enemies/")
     ]);
     const [librams, enemies] = await Promise.all([
       Promise.all(libramFiles.map(async file => {
         const id = file.slice(0, -5);
-        const data = await this.loadJsonFile("data/librams/", file);
-        return [id, new window.LibramData(id, data, `data/librams/${file}`)];
+        const data = await this.loadJsonFile("json/librams/", file);
+        return [id, new window.LibramData(id, data, `json/librams/${file}`)];
       })),
       Promise.all(enemyFiles.map(async file => {
         const id = file.slice(0, -5);
-        const data = await this.loadJsonFile("data/enemies/", file);
-        return new window.EnemyData(id, data, `data/enemies/${file}`);
+        const data = await this.loadJsonFile("json/enemies/", file);
+        return new window.EnemyData(id, data, `json/enemies/${file}`);
       }))
     ]);
 

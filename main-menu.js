@@ -6,6 +6,7 @@ window.MainMenu = class MainMenu {
     this.height = height;
     this.splashScreen = splashScreen;
     this.canInteract = canInteract;
+    this.playerData = playerData;
     this.storyIntro = new window.StoryIntro(width, height);
     this.characterSelect = new window.CharacterSelect(width, height, playerData, dataManager);
     this.page = "main";
@@ -187,6 +188,24 @@ window.MainMenu = class MainMenu {
     });
   }
 
+  hasSaveData() {
+    try {
+      return Boolean(window.localStorage && window.localStorage.getItem("libram-shift-player"));
+    } catch (error) {
+      return false;
+    }
+  }
+
+  async startNewGame() {
+    await this.playerData.load(false);
+    this.startIntroduction();
+  }
+
+  async startContinue() {
+    await this.playerData.load(true);
+    this.startIntroduction();
+  }
+
   startIntroduction() {
     this.splashScreen.transitionTo(() => {
       this.page = "introduction";
@@ -260,10 +279,21 @@ window.MainMenu = class MainMenu {
   drawMainPage() {
     this.drawText("LIBRAM SHIFT", this.width / 2, 210, 54, GameTheme.colors.textPrimary);
     this.drawText("A curious adventure awaits", this.width / 2, 264, 20, GameTheme.colors.textSecondary);
-    this.drawButton("Start", 490, 350, 300, 64, () => {
-      this.startIntroduction();
+
+    const newGameButtonY = 350;
+    const continueButtonY = this.hasSaveData() ? 430 : null;
+
+    this.drawButton("New Game", 490, newGameButtonY, 300, 64, async () => {
+      await this.startNewGame();
     });
-    this.drawButton("Options", 490, 430, 300, 64, () => {
+
+    if (this.hasSaveData()) {
+      this.drawButton("Continue", 490, continueButtonY, 300, 64, async () => {
+        await this.startContinue();
+      });
+    }
+
+    this.drawButton("Options", 490, this.hasSaveData() ? 510 : 430, 300, 64, () => {
       this.transitionTo("options");
     });
   }

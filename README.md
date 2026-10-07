@@ -21,8 +21,8 @@ Then open `src/game.html` in a modern browser. While editing styles, run
 - `src/js/main-menu.js` contains the main menu, audio options, and video settings.
 - `src/js/story-intro.js` loads story paragraphs and displays them one at a time after Start.
 - `src/js/character-select.js` displays the SVG-based Libram class selector after the introduction.
-- `src/js/data-manager.js` loads Libram and enemy records from `src/data/`.
-- `src/data/player.json` provides the default player record.
+- `src/js/data-manager.js` loads Libram and enemy records from `src/json/`.
+- `src/json/player.json` provides the default player record.
 - `src/js/player-data.js` loads player data and persists Libram selection in browser storage.
 - `src/js/splash-screen.js` manages the animated intro and reusable fade transitions.
 - `src/js/utils.js` centralizes shared helpers for clamping, easing, canvas coordinates, and text wrapping.
