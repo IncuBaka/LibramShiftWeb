@@ -252,13 +252,13 @@ window.MainMenu = class MainMenu {
 
   async startContinue() {
     await this.playerData.load(true);
-    this.startIntroduction();
+    this.startIntroduction("Re-Entry");
   }
 
-  startIntroduction() {
+  startIntroduction(section = "Intro") {
     this.transitionTo("introduction", () => {
       this.nameForm.hidden = true;
-      this.storyIntro.start("Intro", () => this.transitionTo("character-select"));
+      this.storyIntro.start(section, () => this.transitionTo("character-select"));
     });
   }
 
