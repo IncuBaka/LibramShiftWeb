@@ -6,12 +6,11 @@ window.PlayerData = class PlayerData {
   }
 
   async load(useSaveData = false) {
-    const response = await fetch("json/player.json");
-    if (!response.ok) {
-      throw new Error(`Unable to load player data: ${response.status}`);
+    if (!window.GameData || !window.GameData.player) {
+      throw new Error("Bundled player data must be loaded before loading player data.");
     }
 
-    this.player = await response.json();
+    this.player = { ...window.GameData.player };
     if (typeof this.player.name !== "string" || !this.player.name.trim()) {
       throw new Error("Player data must include a non-empty name.");
     }
@@ -25,11 +24,14 @@ window.PlayerData = class PlayerData {
     if (savedPlayer) {
       try {
         const savedData = JSON.parse(savedPlayer);
-        if (savedData && savedData.name === this.player.name) {
+        if (
+          savedData &&
+          typeof savedData.name === "string" &&
+          savedData.name.trim()
+        ) {
           this.player = {
             ...this.player,
-            ...savedData,
-            name: this.player.name
+            ...savedData
           };
           this.hasSave = true;
         }
@@ -41,6 +43,19 @@ window.PlayerData = class PlayerData {
 
   loadSaved() {
     return this.load(true);
+  }
+
+  setName(name) {
+    if (!this.player) {
+      throw new Error("Player data must be loaded before setting a name.");
+    }
+    if (typeof name !== "string" || !name.trim()) {
+      throw new Error("Player name must be a non-empty string.");
+    }
+
+    this.player.name = name.trim();
+    localStorage.setItem(this.storageKey, JSON.stringify(this.player));
+    this.hasSave = true;
   }
 
   selectLibram(libram) {

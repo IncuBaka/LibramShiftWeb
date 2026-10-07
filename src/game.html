@@ -7,8 +7,14 @@
   <link rel="stylesheet" href="css/game.css">
 </head>
 <body>
-  <canvas id="game" width="1280" height="720" aria-label="Game screen"></canvas>
+  <div id="game-container">
+    <canvas id="game" width="1280" height="720" aria-label="Game screen"></canvas>
+    <form id="name-entry" hidden>
+      <input id="player-name" name="playerName" type="text" maxlength="9" aria-label="Player name" required>
+    </form>
+  </div>
 
+  <script src="js/game-data.js" defer></script>
   <script src="js/utils.js" defer></script>
   <script src="js/color-palette.js" defer></script>
   <script src="js/splash-screen.js" defer></script>

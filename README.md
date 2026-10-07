@@ -4,15 +4,19 @@ A browser-based game project built with HTML Canvas and vanilla JavaScript.
 
 ## Run
 
-Install the development dependencies and build the stylesheet:
+Install the development dependencies and build the game data bundle and stylesheet:
 
 ```sh
 npm install
-npm run build:css
+npm run build
 ```
 
-Then open `src/game.html` in a modern browser. While editing styles, run
-`npm run watch:css` to recompile the CSS whenever an SCSS file changes.
+Then open `src/game.html` in a modern browser, including directly from the local
+filesystem. The build bundles JSON data into JavaScript so the game does not
+need a local HTTP server. People running a copy that already contains the built
+files do not need Node, Python, or another runtime. Run `npm run build:game-data`
+after changing JSON data. While editing styles, run `npm run watch:css` to
+recompile CSS as SCSS changes.
 
 ## Project files
 
@@ -21,7 +25,9 @@ Then open `src/game.html` in a modern browser. While editing styles, run
 - `src/js/main-menu.js` contains the main menu, audio options, and video settings.
 - `src/js/story-intro.js` loads story paragraphs and displays them one at a time after Start.
 - `src/js/character-select.js` displays the SVG-based Libram class selector after the introduction.
-- `src/js/data-manager.js` loads Libram and enemy records from `src/json/`.
+- `src/js/data-manager.js` loads bundled Libram and enemy records.
+- `scripts/build-game-data.js` bundles JSON assets for local-file use.
+- `src/js/game-data.js` is generated from `src/json/` by the build.
 - `src/json/player.json` provides the default player record.
 - `src/js/player-data.js` loads player data and persists Libram selection in browser storage.
 - `src/js/splash-screen.js` manages the animated intro and reusable fade transitions.
@@ -35,13 +41,13 @@ then call `splashScreen.fadeIn(duration)` after the new menu is ready.
 The game opens on a brief black screen before the splash animation. Click or
 press a key to skip the splash. During the story introduction, each paragraph
 has a minimum reading time; click or press a key once it is ready to continue to
-the next paragraph. After the final paragraph, the game proceeds to character
-selection.
+the next paragraph. At the end of a new game intro, enter and confirm a player
+name to continue. The field starts with the default name from
+`src/json/player.json`, and the confirmed name is saved with the player data.
+After the intro, the game proceeds to character selection.
 Character selection uses Up/Down to switch between Libram and enemy selection,
 and Left/Right to cycle the active selection. The enemy portraits form a
 wrapping carousel with the selected portrait in the center. The selected
 Libram class and enemy names appear beneath their respective portraits.
 
 The default player record starts with the name `Player` and no Libram selected.
-Selecting a Libram updates the in-game player data and saves the selection in
-browser local storage; the JSON file remains the default record served by the game.

@@ -9,6 +9,8 @@ window.MainMenu = class MainMenu {
     this.playerData = playerData;
     this.storyIntro = new window.StoryIntro(width, height);
     this.characterSelect = new window.CharacterSelect(width, height, playerData, dataManager);
+    this.nameForm = document.querySelector("#name-entry");
+    this.nameInput = document.querySelector("#player-name");
     this.page = "main";
     this.hitAreas = [];
     this.focusedIndex = 0;
@@ -42,6 +44,44 @@ window.MainMenu = class MainMenu {
         this.activateAt(this.getCanvasPoint(event));
       }
     });
+    this.nameForm.addEventListener("submit", event => {
+      event.preventDefault();
+      if (
+        !this.canInteract() ||
+        this.page !== "introduction" ||
+        !this.storyIntro.isNamePrompt
+      ) {
+        return;
+      }
+
+      const name = this.nameInput.value.trim();
+      if (!name) {
+        this.nameInput.setCustomValidity("Please enter a name.");
+        return;
+      }
+
+      try {
+        this.playerData.setName(name);
+      } catch (error) {
+        console.error("Unable to save player name:", error);
+        return;
+      }
+
+      this.storyIntro.confirmName();
+      this.nameForm.hidden = true;
+      this.storyIntro.advance();
+    });
+    this.nameInput.addEventListener("input", () => {
+      this.nameInput.setCustomValidity(
+        this.nameInput.value.trim() ? "" : "Please enter a name."
+      );
+    });
+    this.nameInput.addEventListener("keydown", event => {
+      if ((event.ctrlKey || event.metaKey) && event.key.toLowerCase() === "a") {
+        event.preventDefault();
+        this.nameInput.select();
+      }
+    });
     window.addEventListener("keydown", event => this.handleKeyDown(event));
   }
 
@@ -59,6 +99,12 @@ window.MainMenu = class MainMenu {
     }
 
     if (this.page === "introduction") {
+      if (this.nameForm.contains(event.target)) {
+        return;
+      }
+      if (event.code !== "Space") {
+        return;
+      }
       event.preventDefault();
       this.storyIntro.advance();
       return;
@@ -211,6 +257,7 @@ window.MainMenu = class MainMenu {
 
   startIntroduction() {
     this.transitionTo("introduction", () => {
+      this.nameForm.hidden = true;
       this.storyIntro.start("Intro", () => this.transitionTo("character-select"));
     });
   }
@@ -228,6 +275,7 @@ window.MainMenu = class MainMenu {
   update(deltaTime) {
     if (this.page === "introduction") {
       this.storyIntro.update(deltaTime);
+      this.updateNameForm();
     } else if (this.page === "character-select") {
       this.characterSelect.update(deltaTime);
     } else if (this.page === "game" && this.combatManager) {
@@ -236,6 +284,7 @@ window.MainMenu = class MainMenu {
   }
 
   render() {
+    this.updateNameForm();
     this.hitAreas = [];
     this.context.save();
     this.drawBackground();
@@ -250,6 +299,9 @@ window.MainMenu = class MainMenu {
       this.drawVideoPage();
     } else if (this.page === "introduction") {
       this.storyIntro.render(this.context);
+      if (this.storyIntro.isNamePrompt && !this.storyIntro.nameConfirmed) {
+        this.drawPlayerName();
+      }
     } else if (this.page === "character-select") {
       this.hitAreas = this.characterSelect.render(
         this.context,
@@ -268,6 +320,80 @@ window.MainMenu = class MainMenu {
     this.context.restore();
   }
 
+  drawPlayerName() {
+    const name = this.nameInput.value;
+    if (!name) {
+      return;
+    }
+
+    const context = this.context;
+    context.save();
+    context.globalAlpha = this.storyIntro.alpha;
+    context.textBaseline = "middle";
+    context.font = "72px sans-serif";
+    let textWidth = context.measureText(name).width;
+    if (textWidth > 420) {
+      context.font = `${72 * 420 / textWidth}px sans-serif`;
+      textWidth = context.measureText(name).width;
+    }
+
+    const selectionStart = document.activeElement === this.nameInput
+      ? this.nameInput.selectionStart
+      : null;
+    const selectionEnd = document.activeElement === this.nameInput
+      ? this.nameInput.selectionEnd
+      : null;
+    if (
+      selectionStart !== null &&
+      selectionEnd !== null &&
+      selectionEnd > selectionStart
+    ) {
+      const beforeSelection = name.slice(0, selectionStart);
+      const selectedText = name.slice(selectionStart, selectionEnd);
+      const selectedX = this.width / 2 - textWidth / 2 +
+        context.measureText(beforeSelection).width;
+      const selectedWidth = context.measureText(selectedText).width;
+      const fontSize = Number.parseFloat(context.font);
+
+      context.fillStyle = GameTheme.colors.accent;
+      context.fillRect(
+        selectedX,
+        this.height * 0.56 - fontSize * 0.6,
+        selectedWidth,
+        fontSize * 1.2
+      );
+      context.textAlign = "left";
+      context.fillStyle = GameTheme.colors.accentLight;
+      context.fillText(beforeSelection, this.width / 2 - textWidth / 2, this.height * 0.56);
+      context.fillStyle = GameTheme.colors.textOnAccent;
+      context.fillText(selectedText, selectedX, this.height * 0.56);
+      context.fillStyle = GameTheme.colors.accentLight;
+      context.fillText(
+        name.slice(selectionEnd),
+        selectedX + selectedWidth,
+        this.height * 0.56
+      );
+    } else {
+      context.fillStyle = GameTheme.colors.accentLight;
+      context.textAlign = "center";
+      context.fillText(name, this.width / 2, this.height * 0.56);
+    }
+    context.restore();
+  }
+
+  updateNameForm() {
+    const shouldShow = this.page === "introduction" &&
+      this.storyIntro.isNamePrompt &&
+      !this.storyIntro.nameConfirmed;
+    if (shouldShow && this.nameForm.hidden) {
+      this.nameInput.value = this.playerData.player.name;
+      this.nameInput.setCustomValidity("");
+      this.nameForm.hidden = false;
+    } else if (!shouldShow) {
+      this.nameForm.hidden = true;
+    }
+  }
+
   drawBackground() {
     const gradient = this.context.createLinearGradient(0, 0, this.width, this.height);
     gradient.addColorStop(0, GameTheme.colors.menuBackgroundStart);
@@ -279,7 +405,7 @@ window.MainMenu = class MainMenu {
 
   drawMainPage() {
     this.drawText("LIBRAM SHIFT", this.width / 2, 210, 54, GameTheme.colors.textPrimary);
-    this.drawText("A curious adventure awaits", this.width / 2, 264, 20, GameTheme.colors.textSecondary);
+    this.drawText("Astral Emissions", this.width / 2, 264, 20, GameTheme.colors.textSecondary);
 
     const newGameButtonY = 350;
     const continueButtonY = this.hasSaveData() ? 430 : null;

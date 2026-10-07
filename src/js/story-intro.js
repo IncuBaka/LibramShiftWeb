@@ -10,17 +10,18 @@ window.StoryIntro = class StoryIntro {
     this.alpha = 0;
     this.fadeStartAlpha = 0;
     this.onComplete = null;
+    this.namePromptIndex = -1;
+    this.nameConfirmed = false;
     this.fadeDuration = 0.8;
     this.minimumReadDuration = 3;
   }
 
-  async load() {
-    const response = await fetch("json/events/intro.json");
-    if (!response.ok) {
-      throw new Error(`Unable to load story text: ${response.status}`);
-    }
+  get isNamePrompt() {
+    return this.paragraphIndex === this.namePromptIndex;
+  }
 
-    const paragraphsBySection = await response.json();
+  async load() {
+    const paragraphsBySection = window.GameData && window.GameData.intro;
     if (
       !paragraphsBySection ||
       typeof paragraphsBySection !== "object" ||
@@ -54,6 +55,9 @@ window.StoryIntro = class StoryIntro {
 
     this.paragraphs = paragraphs;
     this.paragraphIndex = 0;
+    this.namePromptIndex =
+      section === "Intro" ? paragraphs.length - 1 : -1;
+    this.nameConfirmed = false;
     this.phase = "fade-in";
     this.elapsed = 0;
     this.alpha = 0;
@@ -61,6 +65,10 @@ window.StoryIntro = class StoryIntro {
   }
 
   advance() {
+    if (this.isNamePrompt && !this.nameConfirmed) {
+      return false;
+    }
+
     if (
       this.phase !== "fade-in" &&
       this.phase !== "reading" &&
@@ -72,6 +80,15 @@ window.StoryIntro = class StoryIntro {
     this.phase = "fade-out";
     this.elapsed = 0;
     this.fadeStartAlpha = this.alpha;
+    return true;
+  }
+
+  confirmName() {
+    if (!this.isNamePrompt || this.nameConfirmed) {
+      return false;
+    }
+
+    this.nameConfirmed = true;
     return true;
   }
 
@@ -150,7 +167,7 @@ window.StoryIntro = class StoryIntro {
       const maxWidth = Math.min(920, this.width - 120);
       const lines = window.Utils.wrapText(context, paragraph, maxWidth);
       const lineHeight = 46;
-      const firstLineY = this.height / 2;
+      const firstLineY = this.height / 2 - (this.isNamePrompt ? this.height * 0.055 : 0);
       lines.forEach((line, index) => {
         context.fillText(line, this.width / 2, firstLineY + index * lineHeight);
       });
@@ -161,7 +178,13 @@ window.StoryIntro = class StoryIntro {
     context.font = "18px sans-serif";
     context.textAlign = "center";
     context.textBaseline = "middle";
-    context.fillText("Click or press any key to continue", this.width / 2, this.height - 24);
+    context.fillText(
+      this.isNamePrompt && !this.nameConfirmed
+        ? "Press ENTER to confirm."
+        : "Click or press SPACE to continue.",
+      this.width / 2,
+      this.height - 24
+    );
 
     context.restore();
   }

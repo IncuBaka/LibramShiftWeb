@@ -50,8 +50,44 @@ body {
   place-items: center;
 }
 
+#game-container {
+  position: relative;
+}
+
 canvas {
   display: block;
   background: #000000;
-  image-rendering: pixelated;
+  image-rendering: auto;
+}
+
+#name-entry[hidden] {
+  display: none;
+}
+
+#name-entry {
+  position: absolute;
+  top: 56%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: min(var(--game-name-input-width, 420px), calc(100% - 48px));
+  display: grid;
+  justify-items: center;
+}
+
+#player-name {
+  display: block;
+  width: 100%;
+  padding: 0;
+  border: 0;
+  outline: 0;
+  background: transparent;
+  color: transparent;
+  caret-color: $accent-light;
+  font: var(--game-name-font-size, 72px)/1.2 sans-serif;
+  text-align: center;
+}
+
+#player-name::selection {
+  color: transparent;
+  background: transparent;
 }

@@ -3,6 +3,8 @@
   "version": "1.0.0",
   "private": true,
   "scripts": {
+    "build": "npm run build:game-data && npm run build:css",
+    "build:game-data": "node scripts/build-game-data.js",
     "build:css": "sass src/scss:src/css --no-source-map",
     "watch:css": "sass --watch src/scss:src/css --no-source-map"
   },
