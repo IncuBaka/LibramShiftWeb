@@ -151,7 +151,7 @@ window.SplashScreen = class SplashScreen {
 
       context.save();
       context.globalAlpha = this.splashProgress;
-      context.fillStyle = GameTheme.colors.pageBackground;
+      context.fillStyle = "#000000";
       context.fillRect(0, 0, this.width, this.height);
       context.globalAlpha = this.logoAlpha;
       this.drawShrimpLogo(context, this.width / 2, this.height / 2);
@@ -165,7 +165,7 @@ window.SplashScreen = class SplashScreen {
 
     context.save();
     context.globalAlpha = this.alpha;
-    context.fillStyle = GameTheme.colors.pageBackground;
+    context.fillStyle = "#000000";
     context.fillRect(0, 0, this.width, this.height);
     if (this.showLogo) {
       this.drawShrimpLogo(context, this.width / 2, this.height / 2);
@@ -175,193 +175,121 @@ window.SplashScreen = class SplashScreen {
 
   drawShrimpLogo(context, centerX, centerY) {
     context.save();
-    const scale = Math.min(1, this.width / 900, this.height / 560);
-    context.translate(centerX, centerY);
-    context.scale(scale, scale);
     context.lineCap = "round";
     context.lineJoin = "round";
 
-    const outline = GameTheme.colors.hat;
-    const shell = GameTheme.colors.shrimpTail;
-    const highlight = GameTheme.colors.accentLight;
+    context.fillStyle = GameTheme.colors.shrimpTail;
+    context.beginPath();
+    context.moveTo(centerX - 90, centerY + 8);
+    context.quadraticCurveTo(
+      centerX - 142,
+      centerY + 18,
+      centerX - 126,
+      centerY + 55
+    );
+    context.quadraticCurveTo(
+      centerX - 105,
+      centerY + 43,
+      centerX - 80,
+      centerY + 42
+    );
+    context.closePath();
+    context.fill();
+
+    context.strokeStyle = GameTheme.colors.accent;
+    context.lineWidth = 48;
+    context.beginPath();
+    context.moveTo(centerX - 91, centerY + 4);
+    context.bezierCurveTo(
+      centerX - 70,
+      centerY - 57,
+      centerX + 14,
+      centerY - 76,
+      centerX + 67,
+      centerY - 20
+    );
+    context.stroke();
+
+    context.strokeStyle = GameTheme.colors.accentLight;
+    context.lineWidth = 4;
+    for (const segment of [-55, -20, 15, 48]) {
+      context.beginPath();
+      context.moveTo(centerX + segment - 8, centerY - 42);
+      context.quadraticCurveTo(
+        centerX + segment - 19,
+        centerY - 4,
+        centerX + segment - 3,
+        centerY + 19
+      );
+      context.stroke();
+    }
 
     context.strokeStyle = GameTheme.colors.accentDark;
-    context.lineWidth = 3;
-    context.beginPath();
-    context.arc(0, 0, 214, 0, Math.PI * 2);
-    context.stroke();
-
-    context.fillStyle = shell;
-    context.strokeStyle = outline;
-    context.lineWidth = 8;
-    context.beginPath();
-    context.moveTo(-76, 28);
-    context.bezierCurveTo(-139, -39, -196, -77, -234, -26);
-    context.bezierCurveTo(-273, 27, -247, 113, -205, 130);
-    context.bezierCurveTo(-167, 146, -146, 110, -163, 77);
-    context.bezierCurveTo(-177, 51, -199, 70, -187, 91);
-    context.bezierCurveTo(-178, 107, -163, 103, -157, 92);
-    context.bezierCurveTo(-146, 143, -189, 166, -224, 146);
-    context.bezierCurveTo(-279, 115, -293, 30, -262, -33);
-    context.bezierCurveTo(-225, -108, -146, -107, -83, -43);
-    context.closePath();
-    context.fill();
-    context.stroke();
-
-    context.strokeStyle = highlight;
-    context.lineWidth = 3;
-    context.beginPath();
-    context.moveTo(-257, -34);
-    context.bezierCurveTo(-224, -91, -166, -93, -111, -49);
-    context.stroke();
-
-    context.strokeStyle = outline;
-    context.lineWidth = 7;
-    context.beginPath();
-    context.moveTo(77, -92);
-    context.bezierCurveTo(105, -146, 133, -130, 150, -82);
-    context.bezierCurveTo(162, -49, 183, -44, 187, -67);
-    context.stroke();
-
-    context.fillStyle = GameTheme.colors.menuBackgroundStart;
-    context.strokeStyle = outline;
-    context.lineWidth = 7;
-    context.beginPath();
-    context.moveTo(-33, 30);
-    context.quadraticCurveTo(30, 15, 99, 35);
-    context.lineTo(140, 114);
-    context.quadraticCurveTo(102, 153, 38, 137);
-    context.lineTo(-70, 101);
-    context.closePath();
-    context.fill();
-    context.stroke();
+    context.lineWidth = 6;
+    for (const leg of [-42, -4, 34]) {
+      context.beginPath();
+      context.moveTo(centerX + leg, centerY + 12);
+      context.lineTo(centerX + leg - 19, centerY + 47);
+      context.stroke();
+    }
 
     context.fillStyle = GameTheme.colors.accent;
     context.beginPath();
-    context.moveTo(22, 25);
-    context.lineTo(47, 47);
-    context.lineTo(73, 25);
-    context.lineTo(62, 83);
-    context.lineTo(39, 101);
-    context.lineTo(17, 81);
-    context.closePath();
-    context.fill();
-    context.stroke();
-
-    context.fillStyle = GameTheme.colors.accentLight;
-    context.beginPath();
-    context.moveTo(20, 24);
-    context.lineTo(47, 46);
-    context.lineTo(73, 24);
-    context.lineTo(61, 15);
-    context.lineTo(47, 31);
-    context.lineTo(31, 15);
-    context.closePath();
+    context.ellipse(
+      centerX + 78,
+      centerY - 18,
+      39,
+      31,
+      -0.2,
+      0,
+      Math.PI * 2
+    );
     context.fill();
 
-    context.strokeStyle = outline;
-    context.lineWidth = 6;
-    context.beginPath();
-    context.moveTo(-83, 42);
-    context.quadraticCurveTo(-122, 50, -116, 92);
-    context.quadraticCurveTo(-110, 119, -73, 124);
-    context.moveTo(-67, 82);
-    context.quadraticCurveTo(-30, 95, -5, 123);
-    context.moveTo(100, 84);
-    context.quadraticCurveTo(147, 80, 164, 102);
-    context.stroke();
-
-    context.fillStyle = shell;
-    context.strokeStyle = outline;
-    context.lineWidth = 8;
-    context.beginPath();
-    context.moveTo(-91, -40);
-    context.bezierCurveTo(-112, -89, -75, -143, -14, -151);
-    context.bezierCurveTo(50, -160, 119, -121, 145, -69);
-    context.bezierCurveTo(164, -31, 143, 9, 106, 27);
-    context.bezierCurveTo(61, 49, -6, 35, -51, 17);
-    context.bezierCurveTo(-81, 5, -98, -13, -91, -40);
-    context.closePath();
-    context.fill();
-    context.stroke();
-
-    context.strokeStyle = highlight;
+    context.strokeStyle = GameTheme.colors.accentLight;
     context.lineWidth = 3;
     context.beginPath();
-    context.moveTo(-75, -55);
-    context.bezierCurveTo(-55, -111, 19, -137, 72, -112);
-    context.stroke();
-
-    context.fillStyle = GameTheme.colors.canvasBackground;
-    context.strokeStyle = outline;
-    context.lineWidth = 6;
-    context.beginPath();
-    context.ellipse(-6, -67, 22, 25, -0.2, 0, Math.PI * 2);
-    context.fill();
-    context.stroke();
-    context.fillStyle = highlight;
-    context.beginPath();
-    context.ellipse(-11, -75, 9, 11, -0.2, 0, Math.PI * 2);
-    context.fill();
-
-    context.fillStyle = GameTheme.colors.canvasBackground;
-    context.beginPath();
-    context.ellipse(112, -57, 14, 18, -0.2, 0, Math.PI * 2);
-    context.fill();
-    context.stroke();
-
-    context.strokeStyle = outline;
-    context.lineWidth = 6;
-    context.beginPath();
-    context.moveTo(35, -6);
-    context.lineTo(56, 12);
-    context.lineTo(77, -8);
+    context.moveTo(centerX + 97, centerY - 38);
+    context.quadraticCurveTo(
+      centerX + 130,
+      centerY - 72,
+      centerX + 154,
+      centerY - 68
+    );
+    context.moveTo(centerX + 102, centerY - 34);
+    context.quadraticCurveTo(
+      centerX + 145,
+      centerY - 47,
+      centerX + 164,
+      centerY - 41
+    );
     context.stroke();
 
     context.fillStyle = GameTheme.colors.hat;
-    context.strokeStyle = outline;
-    context.lineWidth = 7;
     context.beginPath();
-    context.ellipse(-12, -146, 55, 15, -0.16, 0, Math.PI * 2);
+    context.arc(centerX + 88, centerY - 25, 4, 0, Math.PI * 2);
     context.fill();
-    context.stroke();
 
+    context.fillStyle = GameTheme.colors.menuBackgroundStart;
     context.beginPath();
-    context.moveTo(-39, -153);
-    context.lineTo(-28, -206);
-    context.quadraticCurveTo(-24, -219, -11, -218);
-    context.lineTo(22, -211);
-    context.quadraticCurveTo(34, -208, 35, -195);
-    context.lineTo(41, -151);
+    context.moveTo(centerX + 5, centerY - 53);
+    context.lineTo(centerX + 101, centerY - 53);
+    context.lineTo(centerX + 86, centerY - 44);
+    context.lineTo(centerX + 19, centerY - 44);
     context.closePath();
     context.fill();
-    context.stroke();
+
+    context.fillStyle = GameTheme.colors.hat;
+    context.beginPath();
+    context.moveTo(centerX + 28, centerY - 121);
+    context.lineTo(centerX + 78, centerY - 121);
+    context.lineTo(centerX + 88, centerY - 53);
+    context.lineTo(centerX + 18, centerY - 53);
+    context.closePath();
+    context.fill();
 
     context.fillStyle = GameTheme.colors.hatBand;
-    context.beginPath();
-    context.moveTo(-34, -178);
-    context.lineTo(31, -166);
-    context.lineTo(34, -151);
-    context.lineTo(-37, -153);
-    context.closePath();
-    context.fill();
-
-    context.strokeStyle = highlight;
-    context.lineWidth = 3;
-    context.beginPath();
-    context.moveTo(-22, -204);
-    context.lineTo(-28, -181);
-    context.moveTo(-3, -202);
-    context.lineTo(-7, -177);
-    context.stroke();
-
-    context.fillStyle = GameTheme.colors.accentLight;
-    context.strokeStyle = outline;
-    context.lineWidth = 6;
-    context.beginPath();
-    context.ellipse(-13, -213, 28, 11, 0.2, 0, Math.PI * 2);
-    context.fill();
-    context.stroke();
+    context.fillRect(centerX + 21, centerY - 73, 64, 11);
 
     context.restore();
   }

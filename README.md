@@ -35,6 +35,11 @@ press a key to skip the splash. During the story introduction, each paragraph
 has a minimum reading time; click or press a key once it is ready to continue to
 the next paragraph. After the final paragraph, the game proceeds to character
 selection.
+Character selection uses Up/Down to switch between Libram and enemy selection,
+and Left/Right to cycle the active selection. The enemy portraits form a
+wrapping carousel with the selected portrait in the center. The selected
+Libram class and enemy names appear beneath their respective portraits.
+
 The default player record starts with the name `Player` and no Libram selected.
 Selecting a Libram updates the in-game player data and saves the selection in
 browser local storage; the JSON file remains the default record served by the game.
