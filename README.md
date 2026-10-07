@@ -20,6 +20,7 @@ recompile CSS as SCSS changes.
 
 ## Project files
 
+- `.github/copilot-instructions.md` defines project-specific coding guidelines for AI-assisted changes.
 - `src/game.html` provides the page and game canvas.
 - `src/js/canvas-manger.js` contains canvas sizing and the game update/render loop.
 - `src/js/main-menu.js` contains the main menu, audio options, and video settings.

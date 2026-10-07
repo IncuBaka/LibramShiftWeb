@@ -28,6 +28,9 @@ window.CharacterSelect = class CharacterSelect {
     this.selectedIndex = this.classes.findIndex(
       libram => libram.id === playerData.player.libram?.id
     );
+    if (this.selectedIndex < 0) {
+      this.select(0);
+    }
 
     const script = document.querySelector('script[src$="character-select.js"]');
     this.circleImage = new Image();

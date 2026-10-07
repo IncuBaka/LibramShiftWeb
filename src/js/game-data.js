@@ -11,7 +11,8 @@ window.GameData = {
       "State Your Name"
     ],
     "Re-Entry": [
-      "You find yourself slipping back into the nether realm with The Oracle awaiting your return. You channel another spirit in preparation to overcome your next encounter..."
+      "You find yourself slipping back into the nether realm with The Oracle awaiting your return.",
+      "You channel another spirit in preparation to overcome your next encounter..."
     ]
   },
   "librams": {

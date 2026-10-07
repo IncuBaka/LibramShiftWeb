@@ -7,6 +7,7 @@ window.MainMenu = class MainMenu {
     this.splashScreen = splashScreen;
     this.canInteract = canInteract;
     this.playerData = playerData;
+    this.dataManager = dataManager;
     this.storyIntro = new window.StoryIntro(width, height);
     this.characterSelect = new window.CharacterSelect(width, height, playerData, dataManager);
     this.nameForm = document.querySelector("#name-entry");
@@ -99,6 +100,15 @@ window.MainMenu = class MainMenu {
     }
 
     if (this.page === "introduction") {
+      if (
+        event.key === "Enter" &&
+        !event.isComposing &&
+        this.storyIntro.isNamePrompt
+      ) {
+        event.preventDefault();
+        this.nameForm.requestSubmit();
+        return;
+      }
       if (this.nameForm.contains(event.target)) {
         return;
       }
@@ -263,13 +273,18 @@ window.MainMenu = class MainMenu {
   }
 
   startCombat() {
+    const enemy = this.dataManager.enemies[this.characterSelect.selectedEnemyIndex];
+    if (!enemy) {
+      throw new Error("A valid enemy must be selected before starting combat.");
+    }
+
     if (!this.combatManager) {
       this.combatManager = new window.CombatManager(this.width, this.height);
     }
 
+    this.combatManager.start(this.playerData.player, enemy);
     this.page = "game";
     this.focusedIndex = 0;
-    this.combatManager.start();
   }
 
   update(deltaTime) {
