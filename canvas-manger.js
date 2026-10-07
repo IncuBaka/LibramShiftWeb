@@ -8,9 +8,22 @@ function resizeCanvas() {
     window.innerWidth / gameWidth,
     window.innerHeight / gameHeight
   );
+  const pixelRatio = window.devicePixelRatio || 1;
+  const displayWidth = gameWidth * scale;
+  const displayHeight = gameHeight * scale;
 
-  canvas.style.width = `${gameWidth * scale}px`;
-  canvas.style.height = `${gameHeight * scale}px`;
+  canvas.style.width = `${displayWidth}px`;
+  canvas.style.height = `${displayHeight}px`;
+  canvas.width = Math.round(displayWidth * pixelRatio);
+  canvas.height = Math.round(displayHeight * pixelRatio);
+  context.setTransform(
+    canvas.width / gameWidth,
+    0,
+    0,
+    canvas.height / gameHeight,
+    0,
+    0
+  );
 }
 
 async function startGame() {

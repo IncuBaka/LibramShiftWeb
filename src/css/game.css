@@ -37,5 +37,5 @@ body {
 canvas {
   display: block;
   background: #000000;
-  image-rendering: pixelated;
+  image-rendering: auto;
 }

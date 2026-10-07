@@ -12,7 +12,7 @@ window.MainMenu = class MainMenu {
     this.hitAreas = [];
     this.focusedIndex = 0;
     this.pointer = { x: -1, y: -1 };
-    this.smoothScaling = false;
+    this.smoothScaling = true;
     this.audioLevels = {
       master: 1,
       music: 0.8,

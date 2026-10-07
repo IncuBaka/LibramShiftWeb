@@ -152,6 +152,7 @@ window.StoryIntro = class StoryIntro {
       context.fillText(line, this.width / 2, firstLineY + index * lineHeight);
     });
 
+    context.globalAlpha = 1;
     context.fillStyle = GameTheme.colors.textSecondary;
     context.font = "18px sans-serif";
     context.fillText("Click or press any key to continue", this.width / 2, this.height - 24);

@@ -2,70 +2,72 @@ window.DataManager = class DataManager {
   constructor() {
     this.librams = null;
     this.enemies = null;
-    this.libramFiles = [
-      "brawler",
-      "caster",
-      "daring-duelist",
-      "larcenist",
-      "mental-mage",
-      "savant",
-      "sinister-shaman"
-    ];
-    this.enemyFiles = [
-      "blondie",
-      "holiday",
-      "kurtauiro",
-      "littlekingtrashmouth",
-      "lktm",
-      "munjuli",
-      "spids",
-      "tauress",
-      "tauresstbd",
-      "triplets",
-      "tripletstbd",
-      "tsuki"
-    ];
+  }
+
+  async getJsonFiles(folder) {
+    const response = await fetch(folder);
+    if (!response.ok) {
+      throw new Error(`Unable to list "${folder}": ${response.status}`);
+    }
+
+    const directoryUrl = new URL(folder, window.location.href);
+    const directory = new DOMParser().parseFromString(
+      await response.text(),
+      "text/html"
+    );
+    const files = [...directory.querySelectorAll("a[href]")]
+      .map(link => new URL(link.getAttribute("href"), directoryUrl))
+      .filter(url => {
+        const relativePath = decodeURIComponent(
+          url.pathname.slice(directoryUrl.pathname.length)
+        );
+        return (
+          url.origin === directoryUrl.origin &&
+          !relativePath.includes("/") &&
+          /\.json$/i.test(relativePath)
+        );
+      })
+      .map(url =>
+        decodeURIComponent(url.pathname.slice(directoryUrl.pathname.length))
+      )
+      .sort();
+
+    if (files.length === 0) {
+      throw new Error(`No JSON files found in "${folder}".`);
+    }
+
+    return files;
+  }
+
+  async loadJsonFile(folder, file) {
+    const path = `${folder}${file}`;
+    const response = await fetch(path);
+    if (!response.ok) {
+      throw new Error(`Unable to load "${path}": ${response.status}`);
+    }
+
+    try {
+      return await response.json();
+    } catch (error) {
+      throw new Error(`Unable to parse JSON in "${path}": ${error.message}`);
+    }
   }
 
   async load() {
+    const [libramFiles, enemyFiles] = await Promise.all([
+      this.getJsonFiles("data/librams/"),
+      this.getJsonFiles("data/enemies/")
+    ]);
     const [librams, enemies] = await Promise.all([
-      Promise.all(this.libramFiles.map(async id => {
-        const response = await fetch(`data/librams/${id}.json`);
-        if (!response.ok) {
-          throw new Error(`Unable to load libram "${id}": ${response.status}`);
-        }
-
-        const data = await response.json();
-        if (
-          !data ||
-          typeof data.Name !== "string" ||
-          !data.Name.trim() ||
-          typeof data.Theme !== "string" ||
-          !/^#[0-9a-f]{6}$/i.test(data.Theme)
-        ) {
-          throw new Error(`Libram "${id}" must include a name and six-digit hex color.`);
-        }
-
-        return [id, { id, name: data.Name, color: data.Theme }];
+      Promise.all(libramFiles.map(async file => {
+        const id = file.slice(0, -5);
+        const data = await this.loadJsonFile("data/librams/", file);
+        return [id, new window.LibramData(id, data, `data/librams/${file}`)];
       })),
-      Promise.all(this.enemyFiles.map(async id => {
-        const response = await fetch(`data/enemies/${id}.json`);
-        if (!response.ok) {
-          throw new Error(`Unable to load enemy "${id}": ${response.status}`);
-        }
-
-        const data = await response.json();
-        if (
-          !data ||
-          typeof data.Name !== "string" ||
-          !data.Name.trim() ||
-          typeof data.Title !== "string" ||
-          !data.Title.trim()
-        ) {
-          throw new Error(`Enemy "${id}" must include a name and title.`);
-        }
-
-        return { id, name: data.Name, title: data.Title };
+      Promise.all(enemyFiles.map(async file => {
+        const id = file.slice(0, -5);
+        const data = await this.loadJsonFile("data/enemies/", file);
+        return new window.EnemyData(id, data, `data/enemies/${file}`);
       }))
     ]);
 
