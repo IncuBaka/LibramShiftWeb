@@ -199,7 +199,7 @@ window.SplashScreen = class SplashScreen {
     context.closePath();
     context.fill();
 
-    context.strokeStyle = GameTheme.colors.accent;
+    context.strokeStyle = GameTheme.colors.shrimpBody;
     context.lineWidth = 48;
     context.beginPath();
     context.moveTo(centerX - 91, centerY + 4);
@@ -213,7 +213,7 @@ window.SplashScreen = class SplashScreen {
     );
     context.stroke();
 
-    context.strokeStyle = GameTheme.colors.accentLight;
+    context.strokeStyle = GameTheme.colors.shrimpLight;
     context.lineWidth = 4;
     for (const segment of [-55, -20, 15, 48]) {
       context.beginPath();
@@ -227,7 +227,7 @@ window.SplashScreen = class SplashScreen {
       context.stroke();
     }
 
-    context.strokeStyle = GameTheme.colors.accentDark;
+    context.strokeStyle = GameTheme.colors.shrimpDark;
     context.lineWidth = 6;
     for (const leg of [-42, -4, 34]) {
       context.beginPath();
@@ -236,7 +236,7 @@ window.SplashScreen = class SplashScreen {
       context.stroke();
     }
 
-    context.fillStyle = GameTheme.colors.accent;
+    context.fillStyle = GameTheme.colors.shrimpBody;
     context.beginPath();
     context.ellipse(
       centerX + 78,
@@ -249,7 +249,7 @@ window.SplashScreen = class SplashScreen {
     );
     context.fill();
 
-    context.strokeStyle = GameTheme.colors.accentLight;
+    context.strokeStyle = GameTheme.colors.shrimpLight;
     context.lineWidth = 3;
     context.beginPath();
     context.moveTo(centerX + 97, centerY - 38);

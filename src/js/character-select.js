@@ -155,16 +155,16 @@ window.CharacterSelect = class CharacterSelect {
     };
   }
 
-  drawPortraitPlaceholder(context, x, y, width, height) {
+  drawPortraitPlaceholder(context, x, y, width, height, scale) {
     context.fillStyle = GameTheme.colors.menuBackgroundStart;
     context.strokeStyle = GameTheme.colors.buttonBorder;
-    context.lineWidth = 3;
+    context.lineWidth = 3 * scale;
     context.fillRect(x, y, width, height);
     context.strokeRect(x, y, width, height);
 
-    const inset = Math.min(12, width * 0.08, height * 0.08);
+    const inset = Math.min(12 * scale, width * 0.08, height * 0.08);
     context.strokeStyle = GameTheme.colors.buttonBackgroundSecondary;
-    context.lineWidth = 1;
+    context.lineWidth = scale;
     context.strokeRect(
       x + inset,
       y + inset,
@@ -175,7 +175,7 @@ window.CharacterSelect = class CharacterSelect {
     const centerX = x + width / 2;
     const centerY = y + height / 2;
     context.strokeStyle = GameTheme.colors.buttonBorder;
-    context.lineWidth = 3;
+    context.lineWidth = 3 * scale;
     context.beginPath();
     context.arc(centerX, centerY - height * 0.1, Math.min(width, height) * 0.09, 0, Math.PI * 2);
     context.moveTo(centerX - width * 0.22, centerY + height * 0.16);
@@ -187,40 +187,42 @@ window.CharacterSelect = class CharacterSelect {
   }
 
   render(context, pointer, focusedIndex) {
-    const scale = Math.min(1.65, (this.width * 0.75) / 169, (this.height * 0.62) / 184);
+    const uiScale = this.height / 720;
+    const scale = Math.min(1.65, (this.width * 0.75) / 169, (this.height * 0.62) / 184) * uiScale;
     const imageWidth = 169 * scale;
     const imageHeight = 184 * scale;
     const originX = (this.width - imageWidth) / 2;
     const visiblePortraitCount = this.enemyNames.length;
     const centerPortraitIndex = Math.floor(visiblePortraitCount / 2);
-    const slotWidth = Math.min(110, this.width * 0.12);
-    const slotHeight = 82;
-    const slotGap = Math.min(14, this.width * 0.012);
+    const slotWidth = Math.min(110, this.width * 0.12) * uiScale;
+    const slotHeight = 82 * uiScale;
+    const slotGap = Math.min(14, this.width * 0.012) * uiScale;
     const rowWidth =
       visiblePortraitCount * slotWidth + (visiblePortraitCount - 1) * slotGap;
     const slotStartX = (this.width - rowWidth) / 2;
-    const slotY = this.height - slotHeight - 18;
-    const selectionCenterY = (36 + slotY) / 2;
+    const slotY = this.height - slotHeight - 18 * uiScale;
+    const selectionCenterY = (36 * uiScale + slotY) / 2;
     const originY = selectionCenterY - imageHeight / 2;
     const fontSize = 11 * scale;
     const hitAreas = [];
 
-    const portraitWidth = Math.min(320, this.width * 0.25);
-    const portraitHeight = Math.min(330, this.height * 0.46);
+    const portraitWidth = Math.min(320, this.width * 0.25) * uiScale;
+    const portraitHeight = Math.min(330, this.height * 0.46) * uiScale;
     const portraitY = selectionCenterY - portraitHeight / 2;
-    const portraitMargin = Math.min(18, this.width * 0.02);
+    const portraitMargin = Math.min(18, this.width * 0.02) * uiScale;
     this.drawPortraitPlaceholder(
       context,
       portraitMargin,
       portraitY,
       portraitWidth,
-      portraitHeight
+      portraitHeight,
+      uiScale
     );
     context.strokeStyle =
       this.activeSelection === "libram"
         ? GameTheme.colors.accentLight
         : GameTheme.colors.buttonBorder;
-    context.lineWidth = this.activeSelection === "libram" ? 3 : 1;
+    context.lineWidth = (this.activeSelection === "libram" ? 3 : 1) * uiScale;
     context.strokeRect(portraitMargin, portraitY, portraitWidth, portraitHeight);
     const libramPortrait = {
       type: "button",
@@ -237,13 +239,13 @@ window.CharacterSelect = class CharacterSelect {
     const selectedLibramName =
       this.classes[this.selectedIndex]?.name ?? "Select a Libram";
     context.fillStyle = GameTheme.colors.textPrimary;
-    context.font = "600 20px sans-serif";
+    context.font = `600 ${20 * uiScale}px sans-serif`;
     context.textAlign = "center";
     context.textBaseline = "middle";
     context.fillText(
       selectedLibramName,
       portraitMargin + portraitWidth / 2,
-      portraitY + portraitHeight + 35
+      portraitY + portraitHeight + 35 * uiScale
     );
 
     const enemyPortraitX = this.width - portraitMargin - portraitWidth;
@@ -252,23 +254,24 @@ window.CharacterSelect = class CharacterSelect {
       enemyPortraitX,
       portraitY,
       portraitWidth,
-      portraitHeight
+      portraitHeight,
+      uiScale
     );
     context.strokeStyle =
       this.activeSelection === "enemy"
         ? GameTheme.colors.accentLight
         : GameTheme.colors.buttonBorder;
-    context.lineWidth = this.activeSelection === "enemy" ? 3 : 1;
+    context.lineWidth = (this.activeSelection === "enemy" ? 3 : 1) * uiScale;
     context.strokeRect(enemyPortraitX, portraitY, portraitWidth, portraitHeight);
     const selectedEnemyName = this.enemyNames[this.selectedEnemyIndex];
     context.fillStyle = GameTheme.colors.textPrimary;
-    context.font = "600 20px sans-serif";
+    context.font = `600 ${20 * uiScale}px sans-serif`;
     context.textAlign = "center";
     context.textBaseline = "middle";
     context.fillText(
       selectedEnemyName,
       enemyPortraitX + portraitWidth / 2,
-      portraitY + portraitHeight + 35
+      portraitY + portraitHeight + 35 * uiScale
     );
     hitAreas.push({
       type: "button",
@@ -325,7 +328,7 @@ window.CharacterSelect = class CharacterSelect {
       const isSelected =
         this.activeSelection === "libram" && index === this.selectedIndex;
       context.font = `600 ${fontSize}px sans-serif`;
-      const textWidth = context.measureText(libramClass.name).width + 28;
+      const textWidth = context.measureText(libramClass.name).width + 28 * uiScale;
       const hitArea = {
         type: "button",
         selectionIndex: index,
@@ -357,12 +360,12 @@ window.CharacterSelect = class CharacterSelect {
         context.strokeStyle = isSelected
           ? GameTheme.colors.accentLight
           : GameTheme.colors.textPrimary;
-        context.lineWidth = isSelected ? 2.5 : 1.5;
+        context.lineWidth = (isSelected ? 2.5 : 1.5) * uiScale;
         context.strokeRect(
-          markerX - squareSize / 2 - 3,
-          markerY - squareSize / 2 - 3,
-          squareSize + 6,
-          squareSize + 6
+          markerX - squareSize / 2 - 3 * uiScale,
+          markerY - squareSize / 2 - 3 * uiScale,
+          squareSize + 6 * uiScale,
+          squareSize + 6 * uiScale
         );
       }
 
@@ -404,14 +407,15 @@ window.CharacterSelect = class CharacterSelect {
         x,
         slotY,
         slotWidth,
-        slotHeight
+        slotHeight,
+        uiScale
       );
       context.strokeStyle =
         isSelected && this.activeSelection === "enemy"
           ? GameTheme.colors.accentLight
           : GameTheme.colors.buttonBorder;
       context.lineWidth =
-        isSelected && this.activeSelection === "enemy" ? 3 : 1;
+        (isSelected && this.activeSelection === "enemy" ? 3 : 1) * uiScale;
       context.strokeRect(x, slotY, slotWidth, slotHeight);
       context.fillStyle =
         isSelected && this.activeSelection === "enemy"
@@ -419,7 +423,7 @@ window.CharacterSelect = class CharacterSelect {
           : GameTheme.colors.textSecondary;
       context.font = `${
         isSelected && this.activeSelection === "enemy" ? "600 " : ""
-      }13px sans-serif`;
+      }${13 * uiScale}px sans-serif`;
       context.textAlign = "center";
       context.textBaseline = "middle";
       context.beginPath();

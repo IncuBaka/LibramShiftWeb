@@ -322,7 +322,9 @@ window.MainMenu = class MainMenu {
         this.pointer,
         this.focusedIndex
       );
-      this.drawButton("Dream", this.width / 2 - 100, 8, 200, 56, () => {
+      const scale = this.height / 720;
+      const buttonWidth = 200 * scale;
+      this.drawButton("Dream", (this.width - buttonWidth) / 2, 8 * scale, buttonWidth, 56 * scale, () => {
         this.startCombat();
       });
     } else if (this.page === "game" && this.combatManager) {
@@ -372,25 +374,25 @@ window.MainMenu = class MainMenu {
       context.fillStyle = GameTheme.colors.accent;
       context.fillRect(
         selectedX,
-        this.height * 0.56 - fontSize * 0.6,
+        this.height * 0.51 - fontSize * 0.6,
         selectedWidth,
         fontSize * 1.2
       );
       context.textAlign = "left";
       context.fillStyle = GameTheme.colors.accentLight;
-      context.fillText(beforeSelection, this.width / 2 - textWidth / 2, this.height * 0.56);
+      context.fillText(beforeSelection, this.width / 2 - textWidth / 2, this.height * 0.51);
       context.fillStyle = GameTheme.colors.textOnAccent;
-      context.fillText(selectedText, selectedX, this.height * 0.56);
+      context.fillText(selectedText, selectedX, this.height * 0.51);
       context.fillStyle = GameTheme.colors.accentLight;
       context.fillText(
         name.slice(selectionEnd),
         selectedX + selectedWidth,
-        this.height * 0.56
+        this.height * 0.51
       );
     } else {
       context.fillStyle = GameTheme.colors.accentLight;
       context.textAlign = "center";
-      context.fillText(name, this.width / 2, this.height * 0.56);
+      context.fillText(name, this.width / 2, this.height * 0.51);
     }
     context.restore();
   }
@@ -403,6 +405,7 @@ window.MainMenu = class MainMenu {
       this.nameInput.value = this.playerData.player.name;
       this.nameInput.setCustomValidity("");
       this.nameForm.hidden = false;
+      this.nameInput.focus({ preventScroll: true });
     } else if (!shouldShow) {
       this.nameForm.hidden = true;
     }
@@ -418,36 +421,39 @@ window.MainMenu = class MainMenu {
   }
 
   drawMainPage() {
-    this.drawText("LIBRAM SHIFT", this.width / 2, 210, 54, GameTheme.colors.textPrimary);
-    this.drawText("A curious adventure awaits", this.width / 2, 264, 20, GameTheme.colors.textSecondary);
+    const scale = this.height / 720;
+    this.drawText("LIBRAM SHIFT", this.width / 2, 210 * scale, 54 * scale, GameTheme.colors.textPrimary);
+    this.drawText("Astral Dreaming", this.width / 2, 264 * scale, 20 * scale, GameTheme.colors.playerName);
 
-    const newGameButtonY = 350;
-    const continueButtonY = this.hasSaveData() ? 430 : null;
+    const newGameButtonY = 350 * scale;
+    const continueButtonY = this.hasSaveData() ? 430 * scale : null;
+    const buttonWidth = 300 * scale;
+    const buttonHeight = 64 * scale;
 
-    this.drawButton("New Game", 490, newGameButtonY, 300, 64, async () => {
+    this.drawButton("New Game", (this.width - buttonWidth) / 2, newGameButtonY, buttonWidth, buttonHeight, async () => {
       await this.startNewGame();
     });
 
     if (this.hasSaveData()) {
-      this.drawButton("Continue", 490, continueButtonY, 300, 64, async () => {
+      this.drawButton("Continue", (this.width - buttonWidth) / 2, continueButtonY, buttonWidth, buttonHeight, async () => {
         await this.startContinue();
       });
     }
 
-    this.drawButton("Options", 490, this.hasSaveData() ? 510 : 430, 300, 64, () => {
+    this.drawButton("Options", (this.width - buttonWidth) / 2, (this.hasSaveData() ? 510 : 430) * scale, buttonWidth, buttonHeight, () => {
       this.transitionTo("options");
     });
   }
 
   drawOptionsPage() {
     this.drawPageTitle("Options");
-    this.drawButton("Audio / Gameplay", 440, 300, 400, 60, () => {
+    this.drawButton("Audio / Gameplay", (this.width - 400) / 2, 300, 400, 60, () => {
       this.transitionTo("audio");
     });
-    this.drawButton("Video (Graphics)", 440, 378, 400, 60, () => {
+    this.drawButton("Video (Graphics)", (this.width - 400) / 2, 378, 400, 60, () => {
       this.transitionTo("video");
     });
-    this.drawButton("Back", 440, 486, 400, 54, () => this.goBack(), true);
+    this.drawButton("Back", (this.width - 400) / 2, 486, 400, 54, () => this.goBack(), true);
   }
 
   drawAudioPage() {
@@ -455,14 +461,14 @@ window.MainMenu = class MainMenu {
     this.drawSlider("Master volume", "master", 306);
     this.drawSlider("Music volume", "music", 376);
     this.drawSlider("Sound effects", "effects", 446);
-    this.drawButton("Back", 440, 526, 400, 54, () => this.goBack(), true);
+    this.drawButton("Back", (this.width - 400) / 2, 526, 400, 54, () => this.goBack(), true);
   }
 
   drawVideoPage() {
     this.drawPageTitle("Video (Graphics)");
     this.drawButton(
       `Fullscreen: ${document.fullscreenElement ? "On" : "Off"}`,
-      440,
+      (this.width - 400) / 2,
       326,
       400,
       60,
@@ -470,7 +476,7 @@ window.MainMenu = class MainMenu {
     );
     this.drawButton(
       `Smooth scaling: ${this.smoothScaling ? "On" : "Off"}`,
-      440,
+      (this.width - 400) / 2,
       404,
       400,
       60,
@@ -479,7 +485,7 @@ window.MainMenu = class MainMenu {
         this.canvas.style.imageRendering = this.smoothScaling ? "auto" : "pixelated";
       }
     );
-    this.drawButton("Back", 440, 500, 400, 54, () => this.goBack(), true);
+    this.drawButton("Back", (this.width - 400) / 2, 500, 400, 54, () => this.goBack(), true);
   }
 
   drawGamePage() {
@@ -490,7 +496,7 @@ window.MainMenu = class MainMenu {
       32,
       GameTheme.colors.textPrimary
     );
-    this.drawButton("Return to menu", 440, this.height / 2 + 48, 400, 58, () => {
+    this.drawButton("Return to menu", (this.width - 400) / 2, this.height / 2 + 48, 400, 58, () => {
       this.transitionTo("main");
     });
   }
@@ -518,24 +524,29 @@ window.MainMenu = class MainMenu {
     const highlighted = hovered || focused;
     const context = this.context;
 
-    context.fillStyle = highlighted
-      ? GameTheme.colors.accent
-      : secondary
-        ? GameTheme.colors.buttonBackgroundSecondary
-        : GameTheme.colors.buttonBackground;
+    context.fillStyle = hovered
+      ? GameTheme.colors.accentDark
+      : focused
+        ? GameTheme.colors.accent
+        : secondary
+          ? GameTheme.colors.buttonBackgroundSecondary
+          : GameTheme.colors.buttonBackground;
     context.beginPath();
-    context.roundRect(x, y, width, height, 8);
+    const scale = this.height / 720;
+    context.roundRect(x, y, width, height, 8 * scale);
     context.fill();
     context.strokeStyle = highlighted
       ? GameTheme.colors.accentLight
       : GameTheme.colors.buttonBorder;
-    context.lineWidth = 2;
+    context.lineWidth = 2 * scale;
     context.stroke();
 
-    context.fillStyle = highlighted
-      ? GameTheme.colors.textOnAccent
-      : GameTheme.colors.textPrimary;
-    context.font = "22px sans-serif";
+    context.fillStyle = hovered
+      ? GameTheme.colors.textPrimary
+      : focused
+        ? GameTheme.colors.textOnAccent
+        : GameTheme.colors.textPrimary;
+    context.font = `${22 * scale}px sans-serif`;
     context.textAlign = "center";
     context.textBaseline = "middle";
     context.fillText(label, x + width / 2, y + height / 2);

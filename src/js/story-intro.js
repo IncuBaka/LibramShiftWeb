@@ -164,7 +164,7 @@ window.StoryIntro = class StoryIntro {
       context.textAlign = "center";
       context.textBaseline = "middle";
 
-      const maxWidth = Math.min(920, this.width - 120);
+      const maxWidth = this.width * 0.7;
       const lines = window.Utils.wrapText(context, paragraph, maxWidth);
       const lineHeight = 46;
       const firstLineY = this.height / 2 - (this.isNamePrompt ? this.height * 0.055 : 0);

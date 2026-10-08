@@ -24,6 +24,7 @@ window.CombatManager = class CombatManager {
       player: null,
       enemies: []
     };
+    this.playerPortrait = new window.PlayerPortrait();
   }
 
   start(player, enemies) {
@@ -62,10 +63,6 @@ window.CombatManager = class CombatManager {
 
     context.fillStyle = GameTheme.colors.pageBackground;
     context.fillRect(0, 0, this.width, this.height);
-    context.fillStyle = GameTheme.colors.textPrimary;
-    context.font = "32px sans-serif";
-    context.textAlign = "center";
-    context.textBaseline = "middle";
-    context.fillText("[ COMBAT ]", this.width / 2, this.height / 2);
+    this.playerPortrait.render(context, this.combatants.player);
   }
 };

@@ -16,7 +16,7 @@ function resizeCanvas() {
   gameContainer.style.setProperty("--game-name-input-width", `${420 * scale}px`);
   gameContainer.style.setProperty("--game-name-font-size", `${72 * scale}px`);
   canvas.style.width = `${displayWidth}px`;
-  canvas.style.height = `${displayHeight}px`;
+  canvas.style.height = "auto";
   canvas.width = Math.round(displayWidth * pixelRatio);
   canvas.height = Math.round(displayHeight * pixelRatio);
   context.setTransform(

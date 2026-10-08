@@ -8,9 +8,13 @@ const themeProperties = {
   textPrimary: "--game-color-text-primary",
   textSecondary: "--game-color-text-secondary",
   textOnAccent: "--game-color-text-on-accent",
+  playerName: "--game-color-player-name",
   accent: "--game-color-accent",
   accentLight: "--game-color-accent-light",
   accentDark: "--game-color-accent-dark",
+  shrimpBody: "--game-color-shrimp-body",
+  shrimpLight: "--game-color-shrimp-light",
+  shrimpDark: "--game-color-shrimp-dark",
   shrimpTail: "--game-color-shrimp-tail",
   hat: "--game-color-hat",
   hatBand: "--game-color-hat-band"
