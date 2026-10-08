@@ -1,6 +1,6 @@
 @use "sass:color";
 
-$page-background: #10131a;
+$black: #10131a;
 $canvas-background: #202633;
 $menu-background-start: #18202b;
 $button-background: #26313f;
@@ -25,7 +25,7 @@ $shrimp-hat-band: #d7a95b;
 }
 
 :root {
-  --game-color-page-background: #{$page-background};
+  --game-color-page-background: #{$black};
   --game-color-canvas-background: #{$canvas-background};
   --game-color-menu-background-start: #{$menu-background-start};
   --game-color-button-background: #{$button-background};
@@ -52,7 +52,7 @@ body {
   height: 100%;
   margin: 0;
   overflow: hidden;
-  background: $page-background;
+  background: $black;
 }
 
 body {

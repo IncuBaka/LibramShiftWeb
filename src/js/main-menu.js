@@ -132,26 +132,34 @@ window.MainMenu = class MainMenu {
       const key = event.key.toLowerCase();
       if (key === "arrowup" || key === "arrowdown") {
         event.preventDefault();
+        const selections = ["libram", "enemy", "dream"];
+        const currentIndex = selections.indexOf(
+          this.characterSelect.activeSelection
+        );
+        const direction = key === "arrowdown" ? 1 : -1;
         this.characterSelect.activeSelection =
-          this.characterSelect.activeSelection === "libram"
-            ? "enemy"
-            : "libram";
+          selections[
+            (currentIndex + direction + selections.length) % selections.length
+          ];
       } else if (key === "arrowright" || key === "d") {
         event.preventDefault();
         if (this.characterSelect.activeSelection === "enemy") {
           this.characterSelect.selectAdjacentEnemy(1);
-        } else {
+        } else if (this.characterSelect.activeSelection === "libram") {
           this.selectAdjacentLibram(1);
         }
       } else if (key === "arrowleft" || key === "a") {
         event.preventDefault();
         if (this.characterSelect.activeSelection === "enemy") {
           this.characterSelect.selectAdjacentEnemy(-1);
-        } else {
+        } else if (this.characterSelect.activeSelection === "libram") {
           this.selectAdjacentLibram(-1);
         }
       } else if (["enter", " "].includes(key)) {
         event.preventDefault();
+        if (this.characterSelect.activeSelection === "dream") {
+          this.startCombat();
+        }
       }
       return;
     }
@@ -321,13 +329,15 @@ window.MainMenu = class MainMenu {
       this.hitAreas = this.characterSelect.render(
         this.context,
         this.pointer,
-        this.focusedIndex
+        this.characterSelect.activeSelection === "dream"
+          ? -1
+          : this.focusedIndex
       );
       const scale = this.height / 720;
       const buttonWidth = 200 * scale;
       this.drawButton("Dream", (this.width - buttonWidth) / 2, 8 * scale, buttonWidth, 56 * scale, () => {
         this.startCombat();
-      });
+      }, false, this.characterSelect.activeSelection === "dream");
     } else if (this.page === "game" && this.combatManager) {
       this.combatManager.render(this.context);
     } else {
@@ -514,14 +524,25 @@ window.MainMenu = class MainMenu {
     this.context.fillText(text, x, y);
   }
 
-  drawButton(label, x, y, width, height, onActivate, secondary = false) {
+  drawButton(
+    label,
+    x,
+    y,
+    width,
+    height,
+    onActivate,
+    secondary = false,
+    focusedOverride = null
+  ) {
     const index = this.hitAreas.length;
     const hovered =
       this.pointer.x >= x &&
       this.pointer.x <= x + width &&
       this.pointer.y >= y &&
       this.pointer.y <= y + height;
-    const focused = index === this.focusedIndex;
+    const focused = focusedOverride === null
+      ? index === this.focusedIndex
+      : focusedOverride;
     const highlighted = hovered || focused;
     const context = this.context;
 
